@@ -17,15 +17,24 @@ declare global {
 export const VoiceInput = ({ onTranscription }: VoiceInputProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState('');
-  const [recognition, setRecognition] = useState<any>(null);
 
-  useEffect(() => {
+  const toggleRecording = () => {
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRec) {
+    if (!SpeechRec) {
+      setError("Web Speech API is not supported in this browser.");
+      return;
+    }
+
+    if (isRecording) {
+      setIsRecording(false);
+      return;
+    }
+
+    try {
       const rec = new SpeechRec();
       rec.continuous = false;
       rec.interimResults = false;
-      rec.lang = 'hi-IN'; // Default to Hindi natively
+      rec.lang = 'en-IN'; // Changed from hi-IN to en-IN (Hinglish) to hugely widen vocabulary support
 
       rec.onresult = (e: any) => {
         const transcript = e.results[0][0].transcript;
@@ -34,26 +43,22 @@ export const VoiceInput = ({ onTranscription }: VoiceInputProps) => {
       };
 
       rec.onerror = (e: any) => {
-        setError(`Error: ${e.error}`);
+        if (e.error !== 'no-speech') {
+          setError(`Error: ${e.error}`);
+        }
         setIsRecording(false);
       };
 
-      setRecognition(rec);
-    } else {
-      setError("Web Speech API is not supported in this browser.");
-    }
-  }, [onTranscription]);
+      rec.onend = () => {
+        setIsRecording(false);
+      };
 
-  const toggleRecording = () => {
-    if (!recognition) return;
-    
-    if (isRecording) {
-      recognition.stop();
-      setIsRecording(false);
-    } else {
       setError('');
-      recognition.start();
+      rec.start();
       setIsRecording(true);
+    } catch (err) {
+      setError("Microphone access denied or error starting.");
+      setIsRecording(false);
     }
   };
 

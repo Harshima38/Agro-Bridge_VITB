@@ -1,12 +1,13 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Leaf, MapPin, Truck } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Leaf, MapPin, Truck, ChevronDown, ChevronUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export const LandingPage = () => {
   const navigate = useNavigate();
   const { loginAs } = useAuth();
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const handleRoleSelect = (role: 'student' | 'farmer') => {
     loginAs(role);
@@ -93,6 +94,66 @@ export const LandingPage = () => {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <section className="max-w-4xl mx-auto px-4 py-16">
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-display font-bold text-forest mb-4">Frequently Asked Questions</h2>
+          <p className="text-text-secondary">Find quick answers about the Agro-Bridge platform</p>
+        </div>
+        
+        <div className="bg-white rounded-2xl shadow-sm border border-cream-dark overflow-hidden">
+          {[
+            { q: "How does payment work?", a: "To ensure 0% commission goes to middlemen, all payments are facilitated directly via UPI links. You pay the farmer precisely when you receive your fresh harvest at the pickup point." },
+            { q: "What if the farmer doesn't show up?", a: "Our platform builds a 'Trust Score' for both students and farmers based on successful deliveries. Consistent no-shows aggressively penalize ratings, but this is extremely rare!" },
+            { q: "Can I use the website in Hindi?", a: "Yes! There is a Language Globe icon at the top right of the navigation bar. You can toggle between English and Hindi at any time, which helps farmers list their produce natively." }
+          ].map((faq, i) => (
+            <div key={i} className="border-b border-cream-dark last:border-0 p-1">
+              <button 
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                className="w-full flex justify-between items-center p-5 text-left bg-transparent hover:bg-cream/50 transition-colors"
+              >
+                <div className="flex flex-col">
+                  <span className="text-xs uppercase tracking-wider text-text-secondary font-bold mb-1">General</span>
+                  <span className="font-bold text-forest text-lg">{faq.q}</span>
+                </div>
+                {openFaq === i ? <ChevronUp className="text-forest"/> : <ChevronDown className="text-forest"/>}
+              </button>
+              <AnimatePresence>
+                {openFaq === i && (
+                  <motion.div 
+                    initial={{ height: 0, opacity: 0 }} 
+                    animate={{ height: 'auto', opacity: 1 }} 
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <p className="p-5 pt-0 text-text-secondary">{faq.a}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+        
+        <div className="flex justify-center mt-8">
+           <button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="px-6 py-2 border border-cream-dark bg-white rounded-full text-text-secondary font-bold text-sm hover:bg-cream transition-colors flex items-center gap-2">
+             <ChevronUp className="w-4 h-4"/> Back to top
+           </button>
+        </div>
+      </section>
+
+      {/* Platform Footer */}
+      <footer className="w-full border-t border-cream-dark bg-white px-8 py-6 mt-12 flex flex-col md:flex-row items-center justify-between gap-4 text-sm font-medium text-text-secondary">
+        <div className="flex items-center gap-2">
+           <Leaf className="text-forest w-5 h-5" />
+           <span>© 2026 Agro-Bridge VITB | Built for Sehore Farmers</span>
+        </div>
+        <div className="flex gap-6">
+           <span className="hover:text-forest cursor-pointer transition-colors">About</span>
+           <span className="hover:text-forest cursor-pointer transition-colors">Privacy</span>
+           <span className="hover:text-forest cursor-pointer transition-colors">Contact</span>
+        </div>
+      </footer>
     </div>
   );
 };

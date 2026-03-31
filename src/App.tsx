@@ -7,12 +7,21 @@ import { FarmerDashboard } from './pages/FarmerDashboard';
 import { OrderConfirmation } from './pages/OrderConfirmation';
 import { ImpactDashboard } from './pages/ImpactDashboard';
 import { ProductDetail } from './pages/ProductDetail';
+import { CartPage } from './pages/CartPage';
+import { OrdersPage } from './pages/OrdersPage';
+import { FarmerHarvests } from './pages/FarmerHarvests';
+import { FarmerEarnings } from './pages/FarmerEarnings';
 import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
+import { CartProvider } from './context/CartContext';
+import { BottomNav } from './components/BottomNav';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
+        <LanguageProvider>
+          <CartProvider>
         <div className="min-h-screen flex flex-col font-sans selection:bg-forest selection:text-cream">
           <Navbar />
           <main className="flex-1 w-full relative z-0">
@@ -27,14 +36,21 @@ function App() {
                 <Route path="/order/:token" element={<OrderConfirmation />} />
                 <Route path="/impact" element={<ImpactDashboard />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/orders" element={<OrdersPage />} />
+                <Route path="/farmer/harvests" element={<FarmerHarvests />} />
+                <Route path="/earnings" element={<FarmerEarnings />} />
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </div>
           </main>
-        </div>
-      </AuthProvider>
-    </Router>
-  );
+          <BottomNav />
+          </div>
+        </CartProvider>
+      </LanguageProvider>
+    </AuthProvider>
+  </Router>
+);
 }
 
 export default App;

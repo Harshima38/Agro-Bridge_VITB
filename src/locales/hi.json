@@ -1,0 +1,13 @@
+{
+  "nav_market": "बाज़ार",
+  "nav_orders": "ऑर्डर",
+  "nav_impact": "प्रभाव",
+  "nav_offers": "ऑफ़र्स",
+  "nav_harvest": "मेरी फ़सल",
+  "nav_earnings": "कमाई",
+  "btn_student": "मैं छात्र हूँ",
+  "btn_farmer": "मैं किसान हूँ",
+  "search_placeholder": "अमरूद, टमाटर खोजें...",
+  "cart_empty": "आपका कार्ट खाली है",
+  "checkout_btn": "UPI से भुगतान करें"
+}

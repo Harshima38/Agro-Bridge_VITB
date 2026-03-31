@@ -104,3 +104,61 @@ CREATE TABLE user_roles (
   role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'moderator')),
   UNIQUE(user_id, role)
 );
+
+-- ====================================================
+-- AGRO-BRIDGE VITB V2 ARCHITECTURAL MIGRATION EXTENSIONS
+-- ====================================================
+
+-- 8. Persistent User Carts
+CREATE TABLE cart_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  listing_id UUID REFERENCES listings(id) ON DELETE CASCADE,
+  quantity_kg DECIMAL(5,2) NOT NULL,
+  added_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(student_id, listing_id)
+);
+
+-- 9. Notification Center Matrix
+CREATE TABLE notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  type VARCHAR(30) NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  body TEXT,
+  is_read BOOLEAN DEFAULT FALSE,
+  metadata JSONB,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- 10. Saved / Favorited Farmers Network
+CREATE TABLE saved_farmers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  farmer_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  saved_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(student_id, farmer_id)
+);
+
+-- 11. Custom Pickup Routes
+CREATE TABLE pickup_points (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(100) NOT NULL,
+  name_hindi VARCHAR(100),
+  description TEXT,
+  latitude DECIMAL(10,8),
+  longitude DECIMAL(11,8),
+  available_slots JSONB,
+  is_active BOOLEAN DEFAULT TRUE
+);
+
+-- 12. Support & Dispute Channels
+CREATE TABLE support_tickets (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  subject VARCHAR(200) NOT NULL,
+  description TEXT NOT NULL,
+  status VARCHAR(20) DEFAULT 'open' CHECK (status IN ('open', 'in_progress', 'resolved', 'closed')),
+  created_at TIMESTAMP DEFAULT NOW(),
+  resolved_at TIMESTAMP
+);

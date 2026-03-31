@@ -1,0 +1,13 @@
+{
+  "nav_market": "Marketplace",
+  "nav_orders": "My Orders",
+  "nav_impact": "Impact",
+  "nav_offers": "Offers",
+  "nav_harvest": "My Harvest",
+  "nav_earnings": "Earnings",
+  "btn_student": "I'm a Student",
+  "btn_farmer": "I'm a Farmer",
+  "search_placeholder": "Search for Guava, Tomatoes...",
+  "cart_empty": "Your cart is empty",
+  "checkout_btn": "Proceed to Pay via UPI"
+}
